@@ -14,7 +14,136 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      attendance: {
+        Row: {
+          attendance_date: string
+          created_at: string
+          employee_id: string
+          id: string
+          status: Database["public"]["Enums"]["attendance_status"]
+          updated_at: string
+        }
+        Insert: {
+          attendance_date: string
+          created_at?: string
+          employee_id: string
+          id?: string
+          status: Database["public"]["Enums"]["attendance_status"]
+          updated_at?: string
+        }
+        Update: {
+          attendance_date?: string
+          created_at?: string
+          employee_id?: string
+          id?: string
+          status?: Database["public"]["Enums"]["attendance_status"]
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "attendance_employee_id_fkey"
+            columns: ["employee_id"]
+            isOneToOne: false
+            referencedRelation: "employees"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      employee_documents: {
+        Row: {
+          created_at: string
+          employee_id: string
+          file_name: string
+          file_path: string
+          id: string
+          kind: Database["public"]["Enums"]["document_kind"]
+          label: string
+        }
+        Insert: {
+          created_at?: string
+          employee_id: string
+          file_name: string
+          file_path: string
+          id?: string
+          kind?: Database["public"]["Enums"]["document_kind"]
+          label: string
+        }
+        Update: {
+          created_at?: string
+          employee_id?: string
+          file_name?: string
+          file_path?: string
+          id?: string
+          kind?: Database["public"]["Enums"]["document_kind"]
+          label?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "employee_documents_employee_id_fkey"
+            columns: ["employee_id"]
+            isOneToOne: false
+            referencedRelation: "employees"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      employees: {
+        Row: {
+          aadhaar_number: string
+          address: string
+          bonus: number
+          created_at: string
+          department: string
+          emergency_contact_name: string
+          emergency_contact_number: string
+          full_name: string
+          id: string
+          joining_date: string
+          monthly_salary: number
+          phone: string
+          reference_name: string
+          reference_phone: string
+          relieving_date: string | null
+          updated_at: string
+        }
+        Insert: {
+          aadhaar_number: string
+          address: string
+          bonus?: number
+          created_at?: string
+          department: string
+          emergency_contact_name: string
+          emergency_contact_number: string
+          full_name: string
+          id?: string
+          joining_date: string
+          monthly_salary?: number
+          phone: string
+          reference_name: string
+          reference_phone: string
+          relieving_date?: string | null
+          updated_at?: string
+        }
+        Update: {
+          aadhaar_number?: string
+          address?: string
+          bonus?: number
+          created_at?: string
+          department?: string
+          emergency_contact_name?: string
+          emergency_contact_number?: string
+          full_name?: string
+          id?: string
+          joining_date?: string
+          monthly_salary?: number
+          phone?: string
+          reference_name?: string
+          reference_phone?: string
+          relieving_date?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
@@ -23,7 +152,13 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
-      [_ in never]: never
+      attendance_status:
+        | "present"
+        | "absent"
+        | "half_day_morning"
+        | "half_day_afternoon"
+        | "weekly_off"
+      document_kind: "aadhaar" | "resume" | "other"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +285,15 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      attendance_status: [
+        "present",
+        "absent",
+        "half_day_morning",
+        "half_day_afternoon",
+        "weekly_off",
+      ],
+      document_kind: ["aadhaar", "resume", "other"],
+    },
   },
 } as const
