@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AttendanceRouteImport } from './routes/attendance'
+import { Route as EmployeesRouteImport } from './routes/employees'
 import { Route as SalaryRouteImport } from './routes/salary'
 
 const IndexRoute = IndexRouteImport.update({
@@ -23,6 +24,11 @@ const AttendanceRoute = AttendanceRouteImport.update({
   path: '/attendance',
   getParentRoute: () => rootRouteImport,
 } as any)
+const EmployeesRoute = EmployeesRouteImport.update({
+  id: '/employees',
+  path: '/employees',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const SalaryRoute = SalaryRouteImport.update({
   id: '/salary',
   path: '/salary',
@@ -32,30 +38,34 @@ const SalaryRoute = SalaryRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/attendance': typeof AttendanceRoute
+  '/employees': typeof EmployeesRoute
   '/salary': typeof SalaryRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/attendance': typeof AttendanceRoute
+  '/employees': typeof EmployeesRoute
   '/salary': typeof SalaryRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/attendance': typeof AttendanceRoute
+  '/employees': typeof EmployeesRoute
   '/salary': typeof SalaryRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/attendance' | '/salary'
+  fullPaths: '/' | '/attendance' | '/employees' | '/salary'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/attendance' | '/salary'
-  id: '__root__' | '/' | '/attendance' | '/salary'
+  to: '/' | '/attendance' | '/employees' | '/salary'
+  id: '__root__' | '/' | '/attendance' | '/employees' | '/salary'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AttendanceRoute: typeof AttendanceRoute
+  EmployeesRoute: typeof EmployeesRoute
   SalaryRoute: typeof SalaryRoute
 }
 
@@ -75,6 +85,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AttendanceRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/employees': {
+      id: '/employees'
+      path: '/employees'
+      fullPath: '/employees'
+      preLoaderRoute: typeof EmployeesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/salary': {
       id: '/salary'
       path: '/salary'
@@ -88,6 +105,7 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AttendanceRoute: AttendanceRoute,
+  EmployeesRoute: EmployeesRoute,
   SalaryRoute: SalaryRoute,
 }
 export const routeTree = rootRouteImport
