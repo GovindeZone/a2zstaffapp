@@ -8,4 +8,4 @@
 - [x] Attendance: daily register, 5 statuses, search + dept filter
 - [x] Salary report: period / department / employee / all, computed from attendance
 - [x] Exports: Excel + PDF for employees and salary report
-- [ ] Head metadata per route, responsive check
+- [x] Head metadata per route, responsive check

@@ -9,7 +9,12 @@ import {
   todayISO,
   type AttendanceStatus,
 } from "@/lib/hr";
-import { useAttendanceRange, useEmployees, useMarkAttendance } from "@/lib/queries";
+import {
+  useAttendanceRange,
+  useEmployees,
+  useMarkAttendance,
+  useMarkAttendanceBatch,
+} from "@/lib/queries";
 
 export const Route = createFileRoute("/attendance")({
   head: () => ({
@@ -40,6 +45,7 @@ function AttendancePage() {
   const employees = useEmployees();
   const rows = useAttendanceRange(date, date);
   const mark = useMarkAttendance();
+  const markBatch = useMarkAttendanceBatch();
 
   const departments = useMemo(
     () => [...new Set((employees.data ?? []).map((e) => e.department).filter(Boolean))].sort(),
@@ -80,8 +86,20 @@ function AttendancePage() {
       toast.info("Everyone in this list is already marked.");
       return;
     }
-    pending.forEach((employee) => setStatus(employee.id, status));
-    toast.success(`Marked ${pending.length} unmarked ${pending.length === 1 ? "entry" : "entries"}.`);
+    markBatch.mutate(
+      pending.map((employee) => ({
+        employee_id: employee.id,
+        attendance_date: date,
+        status,
+      })),
+      {
+        onSuccess: () =>
+          toast.success(
+            `Marked ${pending.length} unmarked ${pending.length === 1 ? "entry" : "entries"}.`,
+          ),
+        onError: (error) => toast.error((error as Error).message),
+      },
+    );
   };
 
   return (
@@ -127,10 +145,18 @@ function AttendancePage() {
           </label>
         </div>
         <div className="mt-3 flex flex-wrap gap-2">
-          <button className="btn-quiet text-xs" onClick={() => markAllRemaining("present")}>
+          <button
+            className="btn-quiet text-xs"
+            disabled={markBatch.isPending}
+            onClick={() => markAllRemaining("present")}
+          >
             Mark remaining present
           </button>
-          <button className="btn-quiet text-xs" onClick={() => markAllRemaining("weekly_off")}>
+          <button
+            className="btn-quiet text-xs"
+            disabled={markBatch.isPending}
+            onClick={() => markAllRemaining("weekly_off")}
+          >
             Mark remaining weekly off
           </button>
         </div>

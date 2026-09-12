@@ -100,7 +100,7 @@ function SalaryPage() {
         <h1 className="font-display text-2xl font-bold tracking-tight">Salary report</h1>
         <p className="mt-1 text-sm text-muted-ink">
           Pay is calculated from marked attendance: monthly salary ÷ 30 days, full pay for present
-          and weekly off, half pay for half days, plus bonus.
+          and weekly off, half pay for half days, plus the employee’s bonus once per report.
         </p>
         <div className="mt-4 grid gap-3 md:grid-cols-4">
           <label className="block">

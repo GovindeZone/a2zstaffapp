@@ -92,6 +92,9 @@ export function EmployeeForm({
           <Field label="Full name *">
             <input
               required
+              inputMode="tel"
+              pattern="[0-9+() -]{7,20}"
+              title="Enter a valid phone number"
               className="field"
               value={form.full_name}
               onChange={(e) => set("full_name", e.target.value)}
@@ -100,6 +103,10 @@ export function EmployeeForm({
           <Field label="Phone number *">
             <input
               required
+              inputMode="numeric"
+              pattern="[0-9]{12}"
+              maxLength={12}
+              title="Enter the 12-digit Aadhaar number"
               className="field"
               value={form.phone}
               onChange={(e) => set("phone", e.target.value)}
@@ -108,6 +115,9 @@ export function EmployeeForm({
           <Field label="Department *">
             <input
               required
+              inputMode="tel"
+              pattern="[0-9+() -]{7,20}"
+              title="Enter a valid phone number"
               className="field"
               value={form.department}
               onChange={(e) => set("department", e.target.value)}
@@ -116,6 +126,9 @@ export function EmployeeForm({
           <Field label="Aadhaar number *">
             <input
               required
+              inputMode="tel"
+              pattern="[0-9+() -]{7,20}"
+              title="Enter a valid phone number"
               className="field"
               value={form.aadhaar_number}
               onChange={(e) => set("aadhaar_number", e.target.value)}

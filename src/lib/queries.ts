@@ -92,6 +92,26 @@ export function useMarkAttendance() {
   });
 }
 
+export function useMarkAttendanceBatch() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async (
+      inputs: Array<{
+        employee_id: string;
+        attendance_date: string;
+        status: AttendanceStatus;
+      }>,
+    ) => {
+      if (!inputs.length) return;
+      const { error } = await supabase
+        .from("attendance")
+        .upsert(inputs as never, { onConflict: "employee_id,attendance_date" });
+      if (error) throw error;
+    },
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["attendance"] }),
+  });
+}
+
 export function useEmployeeDocuments(employeeId: string | null) {
   return useQuery({
     queryKey: ["documents", employeeId],
