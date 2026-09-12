@@ -23,6 +23,8 @@ export const Route = createFileRoute("/employees")({
         property: "og:description",
         content: "Add, edit and remove employees, and keep their documents on file.",
       },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
     ],
   }),
   component: EmployeesPage,

@@ -25,6 +25,8 @@ export const Route = createFileRoute("/attendance")({
         property: "og:description",
         content: "Mark present, absent, half day or weekly off for each employee.",
       },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
     ],
   }),
   component: AttendancePage,
@@ -48,7 +50,11 @@ function AttendancePage() {
     (rows.data ?? []).map((row) => [row.employee_id, row.status as AttendanceStatus]),
   );
 
-  const visible = (employees.data ?? []).filter((employee) => {
+  const eligible = (employees.data ?? []).filter(
+    (employee) => employee.joining_date <= date && (!employee.relieving_date || employee.relieving_date >= date),
+  );
+
+  const visible = eligible.filter((employee) => {
     const term = search.trim().toLowerCase();
     const matches =
       !term ||
@@ -83,7 +89,7 @@ function AttendancePage() {
       <section className="rise panel p-5">
         <h1 className="font-display text-2xl font-bold tracking-tight">Daily attendance</h1>
         <p className="mt-1 text-sm text-muted-ink">
-          {statusFor.size} of {(employees.data ?? []).length} employees marked on this date.
+          {statusFor.size} of {eligible.length} eligible employees marked on this date.
         </p>
         <div className="mt-4 grid gap-3 md:grid-cols-4">
           <label className="block">
