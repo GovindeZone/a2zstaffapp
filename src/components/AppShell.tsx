@@ -40,7 +40,7 @@ export function AppShell({ children }: { children: ReactNode }) {
   const initials =
     session?.user.email
       ?.split("@")[0]
-      .slice(0, 2)
+      ?.slice(0, 2)
       .toUpperCase() ?? "AZ";
 
   return (

@@ -26,6 +26,7 @@ export function useEmployees() {
 export function useAttendanceRange(from: string, to: string) {
   return useQuery({
     queryKey: ["attendance", from, to],
+    enabled: Boolean(from && to && from <= to),
     queryFn: async (): Promise<AttendanceRow[]> => {
       const { data, error } = await supabase
         .from("attendance")
@@ -91,15 +92,36 @@ export function useMarkAttendance() {
   });
 }
 
+export function useMarkAttendanceBatch() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async (
+      inputs: Array<{
+        employee_id: string;
+        attendance_date: string;
+        status: AttendanceStatus;
+      }>,
+    ) => {
+      if (!inputs.length) return;
+      const { error } = await supabase
+        .from("attendance")
+        .upsert(inputs as never, { onConflict: "employee_id,attendance_date" });
+      if (error) throw error;
+    },
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["attendance"] }),
+  });
+}
+
 export function useEmployeeDocuments(employeeId: string | null) {
   return useQuery({
     queryKey: ["documents", employeeId],
     enabled: Boolean(employeeId),
     queryFn: async (): Promise<EmployeeDocument[]> => {
+      if (!employeeId) return [];
       const { data, error } = await supabase
         .from("employee_documents")
         .select("*")
-        .eq("employee_id", employeeId!)
+        .eq("employee_id", employeeId)
         .order("created_at", { ascending: false });
       if (error) throw error;
       return (data ?? []) as EmployeeDocument[];
@@ -123,6 +145,15 @@ export function useUploadDocument() {
         .upload(path, input.file, { upsert: false });
       if (uploadError) throw uploadError;
 
+      const { data: existing } =
+        input.kind === "other"
+          ? { data: [] as Pick<EmployeeDocument, "id" | "file_path">[] }
+          : await supabase
+              .from("employee_documents")
+              .select("id, file_path")
+              .eq("employee_id", input.employeeId)
+              .eq("kind", input.kind);
+
       const { error } = await supabase.from("employee_documents").insert({
         employee_id: input.employeeId,
         kind: input.kind,
@@ -130,7 +161,24 @@ export function useUploadDocument() {
         file_path: path,
         file_name: input.file.name,
       } as never);
-      if (error) throw error;
+      if (error) {
+        await supabase.storage.from("employee-documents").remove([path]);
+        throw error;
+      }
+
+      if (existing?.length) {
+        const oldPaths = existing.map((doc) => doc.file_path);
+        const { error: deleteError } = await supabase
+          .from("employee_documents")
+          .delete()
+          .in(
+            "id",
+            existing.map((doc) => doc.id),
+          );
+        if (!deleteError) {
+          await supabase.storage.from("employee-documents").remove(oldPaths);
+        }
+      }
     },
     onSuccess: (_data, variables) =>
       queryClient.invalidateQueries({ queryKey: ["documents", variables.employeeId] }),
@@ -141,9 +189,12 @@ export function useDeleteDocument() {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: async (doc: EmployeeDocument) => {
-      await supabase.storage.from("employee-documents").remove([doc.file_path]);
       const { error } = await supabase.from("employee_documents").delete().eq("id", doc.id);
       if (error) throw error;
+      const { error: storageError } = await supabase.storage
+        .from("employee-documents")
+        .remove([doc.file_path]);
+      if (storageError) throw storageError;
     },
     onSuccess: (_data, doc) =>
       queryClient.invalidateQueries({ queryKey: ["documents", doc.employee_id] }),

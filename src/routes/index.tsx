@@ -26,6 +26,8 @@ export const Route = createFileRoute("/")({
         property: "og:description",
         content: "Attendance snapshot, headcount and month-to-date payroll at a glance.",
       },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
     ],
   }),
   component: Dashboard,
@@ -38,7 +40,11 @@ function Dashboard() {
   const monthRows = useAttendanceRange(monthStartISO(), today);
 
   const list = employees.data ?? [];
-  const active = list.filter((e) => !e.relieving_date);
+  const active = list.filter(
+    (employee) =>
+      employee.joining_date <= today &&
+      (!employee.relieving_date || employee.relieving_date >= today),
+  );
   const counts = ATTENDANCE_OPTIONS.map((option) => ({
     ...option,
     count: (todayRows.data ?? []).filter((row) => row.status === option.value).length,

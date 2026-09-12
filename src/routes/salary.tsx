@@ -26,6 +26,8 @@ export const Route = createFileRoute("/salary")({
         property: "og:description",
         content: "Attendance-based salary for any period, department or employee.",
       },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
     ],
   }),
   component: SalaryPage,
@@ -53,6 +55,7 @@ function SalaryPage() {
 
   const employees = useEmployees();
   const attendance = useAttendanceRange(from, to);
+  const invalidPeriod = Boolean(from && to && from > to);
 
   const departments = useMemo(
     () => [...new Set((employees.data ?? []).map((e) => e.department).filter(Boolean))].sort(),
@@ -97,7 +100,7 @@ function SalaryPage() {
         <h1 className="font-display text-2xl font-bold tracking-tight">Salary report</h1>
         <p className="mt-1 text-sm text-muted-ink">
           Pay is calculated from marked attendance: monthly salary ÷ 30 days, full pay for present
-          and weekly off, half pay for half days, plus bonus.
+          and weekly off, half pay for half days, plus the employee’s bonus once per report.
         </p>
         <div className="mt-4 grid gap-3 md:grid-cols-4">
           <label className="block">
@@ -168,6 +171,9 @@ function SalaryPage() {
             Export PDF
           </button>
         </div>
+        {invalidPeriod ? (
+          <p className="mt-3 text-sm text-destructive">The from date must be before the to date.</p>
+        ) : null}
       </section>
 
       <div className="grid gap-4 sm:grid-cols-3">

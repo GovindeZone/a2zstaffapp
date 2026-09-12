@@ -104,7 +104,11 @@ export function DocumentsPanel({
           </label>
           <div className="sm:col-span-3">
             <button type="submit" className="btn-accent" disabled={upload.isPending}>
-              {upload.isPending ? "Uploading…" : "Upload document"}
+              {upload.isPending
+                ? "Uploading…"
+                : kind === "other"
+                  ? "Upload document"
+                  : `Upload or replace ${KINDS.find((item) => item.value === kind)?.label}`}
             </button>
           </div>
         </form>
