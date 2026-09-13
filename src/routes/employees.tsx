@@ -43,6 +43,7 @@ const HEADERS = [
   "Emergency contact",
   "Emergency number",
   "Reference name",
+  "Reference relationship",
   "Reference phone",
 ];
 
@@ -90,6 +91,7 @@ function EmployeesPage() {
     employee.emergency_contact_name,
     employee.emergency_contact_number,
     employee.reference_name,
+    employee.reference_relationship,
     employee.reference_phone,
   ]);
 
@@ -204,9 +206,7 @@ function EmployeesPage() {
                 </div>
                 <span
                   className={`rounded-full px-2 py-1 text-[11px] font-semibold ${
-                    employee.relieving_date
-                      ? "bg-off/10 text-off"
-                      : "bg-present/10 text-present"
+                    employee.relieving_date ? "bg-off/10 text-off" : "bg-present/10 text-present"
                   }`}
                 >
                   {employee.relieving_date ? "Relieved" : "Active"}
@@ -225,7 +225,7 @@ function EmployeesPage() {
                 />
                 <Row
                   label="Reference"
-                  value={`${employee.reference_name} · ${employee.reference_phone}`}
+                  value={`${employee.reference_name} · ${employee.reference_relationship} · ${employee.reference_phone}`}
                 />
                 <Row label="Address" value={employee.address} />
               </dl>
@@ -255,12 +255,8 @@ function EmployeesPage() {
         </div>
       )}
 
-      {showForm ? (
-        <EmployeeForm employee={editing} onClose={() => setShowForm(false)} />
-      ) : null}
-      {docsFor ? (
-        <DocumentsPanel employee={docsFor} onClose={() => setDocsFor(null)} />
-      ) : null}
+      {showForm ? <EmployeeForm employee={editing} onClose={() => setShowForm(false)} /> : null}
+      {docsFor ? <DocumentsPanel employee={docsFor} onClose={() => setDocsFor(null)} /> : null}
     </AppShell>
   );
 }

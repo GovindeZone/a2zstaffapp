@@ -9,3 +9,4 @@
 - [x] Salary report: period / department / employee / all, computed from attendance
 - [x] Exports: Excel + PDF for employees and salary report
 - [x] Head metadata per route, responsive check
+- [x] Enforce 10-digit contact numbers, 12-digit Aadhaar, and reference relationship

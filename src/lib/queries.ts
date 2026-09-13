@@ -1,4 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { z } from "zod";
 
 import { supabase } from "@/integrations/supabase/client";
 import type {
@@ -8,6 +9,27 @@ import type {
   Employee,
   EmployeeDocument,
 } from "@/lib/hr";
+
+const employeeSchema = z.object({
+  full_name: z.string().trim().min(1).max(100),
+  phone: z.string().regex(/^\d{10}$/, "Phone number must be exactly 10 digits."),
+  department: z.string().trim().min(1).max(100),
+  joining_date: z.string().date(),
+  relieving_date: z.string().date().nullable(),
+  monthly_salary: z.number().finite().nonnegative(),
+  bonus: z.number().finite().nonnegative(),
+  aadhaar_number: z.string().regex(/^\d{12}$/, "Aadhaar number must be exactly 12 digits."),
+  address: z.string().trim().min(1).max(1000),
+  emergency_contact_name: z.string().trim().min(1).max(100),
+  emergency_contact_number: z
+    .string()
+    .regex(/^\d{10}$/, "Emergency contact number must be exactly 10 digits."),
+  reference_name: z.string().trim().min(1).max(100),
+  reference_relationship: z.string().trim().min(1, "Reference relationship is required.").max(100),
+  reference_phone: z
+    .string()
+    .regex(/^\d{10}$/, "Reference phone number must be exactly 10 digits."),
+});
 
 export function useEmployees() {
   return useQuery({
@@ -44,14 +66,15 @@ export function useSaveEmployee() {
   return useMutation({
     mutationFn: async (payload: Partial<Employee> & { id?: string }) => {
       const { id, ...values } = payload;
+      const validated = employeeSchema.parse(values);
       if (id) {
-        const { error } = await supabase.from("employees").update(values).eq("id", id);
+        const { error } = await supabase.from("employees").update(validated).eq("id", id);
         if (error) throw error;
         return id;
       }
       const { data, error } = await supabase
         .from("employees")
-        .insert(values as never)
+        .insert(validated)
         .select("id")
         .single();
       if (error) throw error;
