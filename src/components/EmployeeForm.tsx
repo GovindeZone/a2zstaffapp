@@ -19,8 +19,11 @@ const EMPTY: FormState = {
   emergency_contact_name: "",
   emergency_contact_number: "",
   reference_name: "",
+  reference_relationship: "",
   reference_phone: "",
 };
+
+const digitsOnly = (value: string, length: number) => value.replace(/\D/g, "").slice(0, length);
 
 export function EmployeeForm({
   employee,
@@ -45,6 +48,7 @@ export function EmployeeForm({
           emergency_contact_name: employee.emergency_contact_name,
           emergency_contact_number: employee.emergency_contact_number,
           reference_name: employee.reference_name,
+           reference_relationship: employee.reference_relationship,
           reference_phone: employee.reference_phone,
         }
       : EMPTY,
@@ -92,9 +96,7 @@ export function EmployeeForm({
           <Field label="Full name *">
             <input
               required
-              inputMode="tel"
-              pattern="[0-9+() -]{7,20}"
-              title="Enter a valid phone number"
+               maxLength={100}
               className="field"
               value={form.full_name}
               onChange={(e) => set("full_name", e.target.value)}
@@ -104,20 +106,18 @@ export function EmployeeForm({
             <input
               required
               inputMode="numeric"
-              pattern="[0-9]{12}"
-              maxLength={12}
-              title="Enter the 12-digit Aadhaar number"
+               pattern="[0-9]{10}"
+               maxLength={10}
+               title="Enter exactly 10 digits"
               className="field"
               value={form.phone}
-              onChange={(e) => set("phone", e.target.value)}
+               onChange={(e) => set("phone", digitsOnly(e.target.value, 10))}
             />
           </Field>
           <Field label="Department *">
             <input
               required
-              inputMode="tel"
-              pattern="[0-9+() -]{7,20}"
-              title="Enter a valid phone number"
+               maxLength={100}
               className="field"
               value={form.department}
               onChange={(e) => set("department", e.target.value)}
@@ -126,12 +126,13 @@ export function EmployeeForm({
           <Field label="Aadhaar number *">
             <input
               required
-              inputMode="tel"
-              pattern="[0-9+() -]{7,20}"
-              title="Enter a valid phone number"
+               inputMode="numeric"
+               pattern="[0-9]{12}"
+               maxLength={12}
+               title="Enter exactly 12 digits"
               className="field"
               value={form.aadhaar_number}
-              onChange={(e) => set("aadhaar_number", e.target.value)}
+               onChange={(e) => set("aadhaar_number", digitsOnly(e.target.value, 12))}
             />
           </Field>
           <Field label="Joining date *">
@@ -192,9 +193,15 @@ export function EmployeeForm({
           <Field label="Emergency contact number *">
             <input
               required
+               inputMode="numeric"
+               pattern="[0-9]{10}"
+               maxLength={10}
+               title="Enter exactly 10 digits"
               className="field"
               value={form.emergency_contact_number}
-              onChange={(e) => set("emergency_contact_number", e.target.value)}
+               onChange={(e) =>
+                 set("emergency_contact_number", digitsOnly(e.target.value, 10))
+               }
             />
           </Field>
           <Field label="Reference name *">
@@ -205,12 +212,25 @@ export function EmployeeForm({
               onChange={(e) => set("reference_name", e.target.value)}
             />
           </Field>
+           <Field label="Reference relationship *">
+             <input
+               required
+               maxLength={100}
+               className="field"
+               value={form.reference_relationship}
+               onChange={(e) => set("reference_relationship", e.target.value)}
+             />
+           </Field>
           <Field label="Reference phone number *">
             <input
               required
+               inputMode="numeric"
+               pattern="[0-9]{10}"
+               maxLength={10}
+               title="Enter exactly 10 digits"
               className="field"
               value={form.reference_phone}
-              onChange={(e) => set("reference_phone", e.target.value)}
+               onChange={(e) => set("reference_phone", digitsOnly(e.target.value, 10))}
             />
           </Field>
         </div>

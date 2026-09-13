@@ -21,6 +21,7 @@ export interface Employee {
   emergency_contact_name: string;
   emergency_contact_number: string;
   reference_name: string;
+  reference_relationship: string;
   reference_phone: string;
   created_at?: string;
 }

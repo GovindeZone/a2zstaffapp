@@ -43,6 +43,7 @@ const HEADERS = [
   "Emergency contact",
   "Emergency number",
   "Reference name",
+  "Reference relationship",
   "Reference phone",
 ];
 
@@ -90,6 +91,7 @@ function EmployeesPage() {
     employee.emergency_contact_name,
     employee.emergency_contact_number,
     employee.reference_name,
+    employee.reference_relationship,
     employee.reference_phone,
   ]);
 
@@ -225,7 +227,7 @@ function EmployeesPage() {
                 />
                 <Row
                   label="Reference"
-                  value={`${employee.reference_name} · ${employee.reference_phone}`}
+                   value={`${employee.reference_name} · ${employee.reference_relationship} · ${employee.reference_phone}`}
                 />
                 <Row label="Address" value={employee.address} />
               </dl>
