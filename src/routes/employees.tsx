@@ -206,9 +206,7 @@ function EmployeesPage() {
                 </div>
                 <span
                   className={`rounded-full px-2 py-1 text-[11px] font-semibold ${
-                    employee.relieving_date
-                      ? "bg-off/10 text-off"
-                      : "bg-present/10 text-present"
+                    employee.relieving_date ? "bg-off/10 text-off" : "bg-present/10 text-present"
                   }`}
                 >
                   {employee.relieving_date ? "Relieved" : "Active"}
@@ -257,12 +255,8 @@ function EmployeesPage() {
         </div>
       )}
 
-      {showForm ? (
-        <EmployeeForm employee={editing} onClose={() => setShowForm(false)} />
-      ) : null}
-      {docsFor ? (
-        <DocumentsPanel employee={docsFor} onClose={() => setDocsFor(null)} />
-      ) : null}
+      {showForm ? <EmployeeForm employee={editing} onClose={() => setShowForm(false)} /> : null}
+      {docsFor ? <DocumentsPanel employee={docsFor} onClose={() => setDocsFor(null)} /> : null}
     </AppShell>
   );
 }

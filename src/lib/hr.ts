@@ -1,9 +1,5 @@
 export type AttendanceStatus =
-  | "present"
-  | "absent"
-  | "half_day_morning"
-  | "half_day_afternoon"
-  | "weekly_off";
+  "present" | "absent" | "half_day_morning" | "half_day_afternoon" | "weekly_off";
 
 export type DocumentKind = "aadhaar" | "resume" | "other";
 
@@ -106,10 +102,7 @@ export interface SalaryLine {
   net: number;
 }
 
-export function buildSalaryLines(
-  employees: Employee[],
-  attendance: AttendanceRow[],
-): SalaryLine[] {
+export function buildSalaryLines(employees: Employee[], attendance: AttendanceRow[]): SalaryLine[] {
   const byEmployee = new Map<string, AttendanceRow[]>();
   for (const row of attendance) {
     const list = byEmployee.get(row.employee_id) ?? [];

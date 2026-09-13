@@ -25,11 +25,7 @@ const employeeSchema = z.object({
     .string()
     .regex(/^\d{10}$/, "Emergency contact number must be exactly 10 digits."),
   reference_name: z.string().trim().min(1).max(100),
-  reference_relationship: z
-    .string()
-    .trim()
-    .min(1, "Reference relationship is required.")
-    .max(100),
+  reference_relationship: z.string().trim().min(1, "Reference relationship is required.").max(100),
   reference_phone: z
     .string()
     .regex(/^\d{10}$/, "Reference phone number must be exactly 10 digits."),

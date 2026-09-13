@@ -199,9 +199,7 @@ export function EmployeeForm({
               title="Enter exactly 10 digits"
               className="field"
               value={form.emergency_contact_number}
-              onChange={(e) =>
-                set("emergency_contact_number", digitsOnly(e.target.value, 10))
-              }
+              onChange={(e) => set("emergency_contact_number", digitsOnly(e.target.value, 10))}
             />
           </Field>
           <Field label="Reference name *">
