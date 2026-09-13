@@ -103,6 +103,7 @@ export type Database = {
           phone: string
           reference_name: string
           reference_phone: string
+          reference_relationship: string
           relieving_date: string | null
           updated_at: string
         }
@@ -121,6 +122,7 @@ export type Database = {
           phone: string
           reference_name: string
           reference_phone: string
+          reference_relationship: string
           relieving_date?: string | null
           updated_at?: string
         }
@@ -139,6 +141,7 @@ export type Database = {
           phone?: string
           reference_name?: string
           reference_phone?: string
+          reference_relationship?: string
           relieving_date?: string | null
           updated_at?: string
         }
