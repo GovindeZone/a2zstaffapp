@@ -227,7 +227,7 @@ function EmployeesPage() {
                 />
                 <Row
                   label="Reference"
-                   value={`${employee.reference_name} · ${employee.reference_relationship} · ${employee.reference_phone}`}
+                  value={`${employee.reference_name} · ${employee.reference_relationship} · ${employee.reference_phone}`}
                 />
                 <Row label="Address" value={employee.address} />
               </dl>
