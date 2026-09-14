@@ -1,0 +1,1 @@
+CREATE UNIQUE INDEX employees_aadhaar_number_unique_idx ON public.employees (aadhaar_number);
