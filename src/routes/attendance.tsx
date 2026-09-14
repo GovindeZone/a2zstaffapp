@@ -58,7 +58,9 @@ function AttendancePage() {
   );
 
   const eligible = (employees.data ?? []).filter(
-    (employee) => employee.joining_date <= date && (!employee.relieving_date || employee.relieving_date >= date),
+    (employee) =>
+      employee.joining_date <= date &&
+      (!employee.relieving_date || employee.relieving_date >= date),
   );
 
   const visible = eligible.filter((employee) => {

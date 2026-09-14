@@ -3,13 +3,7 @@ import { useMemo, useState } from "react";
 
 import { AppShell } from "@/components/AppShell";
 import { exportToExcel, exportToPdf } from "@/lib/exporters";
-import {
-  buildSalaryLines,
-  formatDate,
-  formatMoney,
-  monthStartISO,
-  todayISO,
-} from "@/lib/hr";
+import { buildSalaryLines, formatDate, formatMoney, monthStartISO, todayISO } from "@/lib/hr";
 import { useAttendanceRange, useEmployees } from "@/lib/queries";
 
 export const Route = createFileRoute("/salary")({
@@ -88,7 +82,7 @@ function SalaryPage() {
 
   const scope =
     employeeId !== "all"
-      ? (employees.data ?? []).find((e) => e.id === employeeId)?.full_name ?? "Employee"
+      ? ((employees.data ?? []).find((e) => e.id === employeeId)?.full_name ?? "Employee")
       : department !== "all"
         ? department
         : "All employees";
@@ -210,9 +204,7 @@ function SalaryPage() {
               lines.map((line) => (
                 <tr key={line.employee.id}>
                   <td className="px-4 py-3 font-body font-medium">{line.employee.full_name}</td>
-                  <td className="px-3 py-3 font-body text-muted-ink">
-                    {line.employee.department}
-                  </td>
+                  <td className="px-3 py-3 font-body text-muted-ink">{line.employee.department}</td>
                   <td className="px-3 py-3 text-right">{line.present}</td>
                   <td className="px-3 py-3 text-right">{line.halfDays}</td>
                   <td className="px-3 py-3 text-right">{line.absent}</td>
