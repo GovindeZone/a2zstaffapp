@@ -69,6 +69,8 @@ export function useSaveEmployee() {
       const validated = employeeSchema.parse(values);
       if (id) {
         const { error } = await supabase.from("employees").update(validated).eq("id", id);
+        if (error?.code === "23505")
+          throw new Error("An employee with this Aadhaar number already exists.");
         if (error) throw error;
         return id;
       }
@@ -77,6 +79,8 @@ export function useSaveEmployee() {
         .insert(validated)
         .select("id")
         .single();
+      if (error?.code === "23505")
+        throw new Error("An employee with this Aadhaar number already exists.");
       if (error) throw error;
       return data.id as string;
     },
