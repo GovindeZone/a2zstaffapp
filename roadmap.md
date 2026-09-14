@@ -10,3 +10,4 @@
 - [x] Exports: Excel + PDF for employees and salary report
 - [x] Head metadata per route, responsive check
 - [x] Enforce 10-digit contact numbers, 12-digit Aadhaar, and reference relationship
+- [x] Correct attendance totals, status colours, past-date editing, and unique Aadhaar

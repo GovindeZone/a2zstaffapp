@@ -67,7 +67,7 @@
   --present: oklch(0.463 0.084 158);
   --absent: oklch(0.564 0.176 39);
   --half: oklch(0.638 0.135 68);
-  --off: oklch(0.68 0.012 258);
+  --off: oklch(0.5 0.15 252);
 
   --background: var(--ground);
   --foreground: var(--ink);

@@ -6,6 +6,7 @@ import { AppShell } from "@/components/AppShell";
 import {
   ATTENDANCE_OPTIONS,
   STATUS_TONE,
+  attendanceTotals,
   todayISO,
   type AttendanceStatus,
 } from "@/lib/hr";
@@ -70,6 +71,10 @@ function AttendancePage() {
     const inDept = department === "all" || employee.department === department;
     return matches && inDept;
   });
+  const visibleIds = new Set(visible.map((employee) => employee.id));
+  const totals = attendanceTotals(
+    (rows.data ?? []).filter((row) => visibleIds.has(row.employee_id)),
+  );
 
   const setStatus = (employeeId: string, status: AttendanceStatus) => {
     mark.mutate(
@@ -160,6 +165,12 @@ function AttendancePage() {
             Mark remaining weekly off
           </button>
         </div>
+        <div className="mt-4 grid grid-cols-2 gap-2 sm:grid-cols-4">
+          <AttendanceTotal label="Present" value={totals.present} tone="text-present" />
+          <AttendanceTotal label="Absent" value={totals.absent} tone="text-absent" />
+          <AttendanceTotal label="Half day" value={totals.halfDays} tone="text-half" />
+          <AttendanceTotal label="Week off" value={totals.weeklyOff} tone="text-off" />
+        </div>
       </section>
 
       <section className="panel divide-y divide-line">
@@ -193,7 +204,7 @@ function AttendancePage() {
                         title={option.label}
                         className={`rounded-lg border px-2.5 py-1.5 text-xs font-semibold transition-colors ${
                           isActive
-                            ? `border-transparent ${STATUS_TONE[option.value]}`
+                            ? STATUS_TONE[option.value]
                             : "border-line text-muted-ink hover:text-ink"
                         }`}
                       >
@@ -208,5 +219,14 @@ function AttendancePage() {
         )}
       </section>
     </AppShell>
+  );
+}
+
+function AttendanceTotal({ label, value, tone }: { label: string; value: number; tone: string }) {
+  return (
+    <div className="rounded-lg border border-line bg-ground px-3 py-2">
+      <p className="text-[11px] text-muted-ink">{label}</p>
+      <p className={`font-mono text-lg font-bold tabular-nums ${tone}`}>{value}</p>
+    </div>
   );
 }

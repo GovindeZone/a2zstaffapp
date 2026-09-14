@@ -37,7 +37,7 @@ const HEADERS = [
   "Employee",
   "Department",
   "Present",
-  "Half days",
+  "Half days (equiv.)",
   "Absent",
   "Weekly off",
   "Payable days",
@@ -99,8 +99,8 @@ function SalaryPage() {
       <section className="rise panel p-5">
         <h1 className="font-display text-2xl font-bold tracking-tight">Salary report</h1>
         <p className="mt-1 text-sm text-muted-ink">
-          Pay is calculated from marked attendance: monthly salary ÷ 30 days, full pay for present
-          and weekly off, half pay for half days, plus the employee’s bonus once per report.
+          Payable days follow the attendance register: marked days − absent + week off − half-day
+          equivalent (two half days equal one day), plus the employee’s bonus once per report.
         </p>
         <div className="mt-4 grid gap-3 md:grid-cols-4">
           <label className="block">
@@ -188,10 +188,10 @@ function SalaryPage() {
             <tr className="border-b border-line text-left text-[11px] uppercase tracking-wide text-muted-ink">
               <th className="px-4 py-3">Employee</th>
               <th className="px-3 py-3">Dept</th>
-              <th className="px-3 py-3 text-right">P</th>
-              <th className="px-3 py-3 text-right">½</th>
-              <th className="px-3 py-3 text-right">A</th>
-              <th className="px-3 py-3 text-right">WO</th>
+              <th className="px-3 py-3 text-right text-present">P</th>
+              <th className="px-3 py-3 text-right text-half">½</th>
+              <th className="px-3 py-3 text-right text-absent">A</th>
+              <th className="px-3 py-3 text-right text-off">WO</th>
               <th className="px-3 py-3 text-right">Payable days</th>
               <th className="px-3 py-3 text-right">Per day</th>
               <th className="px-3 py-3 text-right">Earned</th>

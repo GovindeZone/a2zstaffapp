@@ -57,11 +57,11 @@ export const STATUS_LABEL: Record<AttendanceStatus, string> = {
 
 /** Text colour class per status, using design tokens only. */
 export const STATUS_TONE: Record<AttendanceStatus, string> = {
-  present: "text-present bg-present/10",
-  absent: "text-absent bg-absent/10",
-  half_day_morning: "text-half bg-half/10",
-  half_day_afternoon: "text-half bg-half/10",
-  weekly_off: "text-off bg-off/10",
+  present: "border-present/40 bg-present/15 text-present",
+  absent: "border-absent/40 bg-absent/15 text-absent",
+  half_day_morning: "border-half/50 bg-half/20 text-half",
+  half_day_afternoon: "border-half/50 bg-half/20 text-half",
+  weekly_off: "border-off/40 bg-off/15 text-off",
 };
 
 export const STATUS_DOT: Record<AttendanceStatus, string> = {
@@ -102,6 +102,26 @@ export interface SalaryLine {
   net: number;
 }
 
+export function attendanceTotals(rows: AttendanceRow[]) {
+  let present = 0;
+  let halfDays = 0;
+  let absent = 0;
+  let weeklyOff = 0;
+
+  for (const row of rows) {
+    if (row.status === "present") present += 1;
+    else if (row.status === "absent") absent += 1;
+    else if (row.status === "weekly_off") weeklyOff += 1;
+    else halfDays += 1;
+  }
+
+  const markedDays = rows.length;
+  const halfDayEquivalent = halfDays / 2;
+  const payableDays = markedDays - absent + weeklyOff - halfDayEquivalent;
+
+  return { present, halfDays, halfDayEquivalent, absent, weeklyOff, markedDays, payableDays };
+}
+
 export function buildSalaryLines(employees: Employee[], attendance: AttendanceRow[]): SalaryLine[] {
   const byEmployee = new Map<string, AttendanceRow[]>();
   for (const row of attendance) {
@@ -112,19 +132,8 @@ export function buildSalaryLines(employees: Employee[], attendance: AttendanceRo
 
   return employees.map((employee) => {
     const rows = byEmployee.get(employee.id) ?? [];
-    let present = 0;
-    let halfDays = 0;
-    let absent = 0;
-    let weeklyOff = 0;
-    let payableDays = 0;
-
-    for (const row of rows) {
-      payableDays += dayWeight(row.status);
-      if (row.status === "present") present += 1;
-      else if (row.status === "absent") absent += 1;
-      else if (row.status === "weekly_off") weeklyOff += 1;
-      else halfDays += 1;
-    }
+    const { present, halfDays, absent, weeklyOff, markedDays, payableDays } =
+      attendanceTotals(rows);
 
     const monthly = Number(employee.monthly_salary) || 0;
     const bonus = Number(employee.bonus) || 0;
@@ -137,7 +146,7 @@ export function buildSalaryLines(employees: Employee[], attendance: AttendanceRo
       halfDays,
       absent,
       weeklyOff,
-      markedDays: rows.length,
+      markedDays,
       payableDays,
       perDayRate,
       earned,
