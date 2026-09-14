@@ -37,7 +37,7 @@ const HEADERS = [
   "Employee",
   "Department",
   "Present",
-  "Half days (equiv.)",
+  "Half days",
   "Absent",
   "Weekly off",
   "Payable days",

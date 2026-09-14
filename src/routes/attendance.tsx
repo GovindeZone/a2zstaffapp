@@ -165,11 +165,13 @@ function AttendancePage() {
             Mark remaining weekly off
           </button>
         </div>
-        <div className="mt-4 grid grid-cols-2 gap-2 sm:grid-cols-4">
+        <div className="mt-4 grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-6">
           <AttendanceTotal label="Present" value={totals.present} tone="text-present" />
           <AttendanceTotal label="Absent" value={totals.absent} tone="text-absent" />
           <AttendanceTotal label="Half day" value={totals.halfDays} tone="text-half" />
           <AttendanceTotal label="Week off" value={totals.weeklyOff} tone="text-off" />
+          <AttendanceTotal label="Marked days" value={totals.markedDays} tone="text-ink" />
+          <AttendanceTotal label="Payable days" value={totals.payableDays} tone="text-ink" />
         </div>
       </section>
 

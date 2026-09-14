@@ -76,8 +76,9 @@ export const STATUS_DOT: Record<AttendanceStatus, string> = {
 export function dayWeight(status: AttendanceStatus): number {
   switch (status) {
     case "present":
-    case "weekly_off":
       return 1;
+    case "weekly_off":
+      return 2;
     case "half_day_morning":
     case "half_day_afternoon":
       return 0.5;
