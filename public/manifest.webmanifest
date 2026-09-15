@@ -1,0 +1,26 @@
+{
+  "id": "/",
+  "name": "A to Z HR Attendance",
+  "short_name": "A to Z HR",
+  "description": "Employee attendance, records and salary management for A to Z.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#faf7ef",
+  "theme_color": "#c4512b",
+  "orientation": "any",
+  "icons": [
+    {
+      "src": "/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
