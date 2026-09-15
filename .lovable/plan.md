@@ -1,12 +1,12 @@
-# Correct salary payable and total days
+# Clean branding and mobile installation
 
 ## Changes
-- Calculate payable days as **Present + Week Off** only, so the shown `8 P + 2 WO` becomes `10` payable days.
-- Add an inclusive **Total Days** value for the selected date range, so `01/09/2026–13/09/2026` shows `13`.
-- Display Total Days in the salary table and include it in Excel and PDF exports.
-- Update the salary explanation to match the confirmed calculation.
-- Keep the attendance summary consistent with the same payable-days rule.
+- Hide the Lovable badge from the app’s published presentation.
+- Remove any visible AI label controlled by the app or publishing settings.
+- Add an A to Z app icon and install metadata so the published site can be added to a phone home screen.
+- Keep this as install-only support; no offline caching or service worker will be added.
 
 ## Verification
-- Check the example period and status counts in the running app.
-- Confirm exports receive the new Total Days column and the app remains error-free.
+- Confirm no Lovable or AI labels are rendered by the application.
+- Confirm the phone-install manifest and icons load correctly.
+- Check the app on a mobile-sized screen and confirm it remains error-free.
