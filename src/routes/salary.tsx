@@ -3,7 +3,14 @@ import { useMemo, useState } from "react";
 
 import { AppShell } from "@/components/AppShell";
 import { exportToExcel, exportToPdf } from "@/lib/exporters";
-import { buildSalaryLines, formatDate, formatMoney, monthStartISO, todayISO } from "@/lib/hr";
+import {
+  buildSalaryLines,
+  formatDate,
+  formatMoney,
+  inclusiveDays,
+  monthStartISO,
+  todayISO,
+} from "@/lib/hr";
 import { useAttendanceRange, useEmployees } from "@/lib/queries";
 
 export const Route = createFileRoute("/salary")({
@@ -34,6 +41,7 @@ const HEADERS = [
   "Half days",
   "Absent",
   "Weekly off",
+  "Total days",
   "Payable days",
   "Per day",
   "Earned",
@@ -50,6 +58,7 @@ function SalaryPage() {
   const employees = useEmployees();
   const attendance = useAttendanceRange(from, to);
   const invalidPeriod = Boolean(from && to && from > to);
+  const totalDays = inclusiveDays(from, to);
 
   const departments = useMemo(
     () => [...new Set((employees.data ?? []).map((e) => e.department).filter(Boolean))].sort(),
@@ -73,6 +82,7 @@ function SalaryPage() {
     line.halfDays,
     line.absent,
     line.weeklyOff,
+    totalDays,
     line.payableDays,
     Math.round(line.perDayRate),
     Math.round(line.earned),
@@ -93,8 +103,8 @@ function SalaryPage() {
       <section className="rise panel p-5">
         <h1 className="font-display text-2xl font-bold tracking-tight">Salary report</h1>
         <p className="mt-1 text-sm text-muted-ink">
-          Payable days follow the attendance register: marked days − absent + week off − half-day
-          equivalent (two half days equal one day), plus the employee’s bonus once per report.
+          Payable days are Present + Week Off. Total days includes every calendar day in the
+          selected period. The employee’s bonus is added once per report.
         </p>
         <div className="mt-4 grid gap-3 md:grid-cols-4">
           <label className="block">
@@ -186,6 +196,7 @@ function SalaryPage() {
               <th className="px-3 py-3 text-right text-half">½</th>
               <th className="px-3 py-3 text-right text-absent">A</th>
               <th className="px-3 py-3 text-right text-off">WO</th>
+              <th className="px-3 py-3 text-right">Total days</th>
               <th className="px-3 py-3 text-right">Payable days</th>
               <th className="px-3 py-3 text-right">Per day</th>
               <th className="px-3 py-3 text-right">Earned</th>
@@ -196,7 +207,7 @@ function SalaryPage() {
           <tbody className="divide-y divide-line font-mono tabular-nums">
             {lines.length === 0 ? (
               <tr>
-                <td colSpan={11} className="px-4 py-8 text-center font-body text-muted-ink">
+                <td colSpan={12} className="px-4 py-8 text-center font-body text-muted-ink">
                   No employees for this selection.
                 </td>
               </tr>
@@ -209,6 +220,7 @@ function SalaryPage() {
                   <td className="px-3 py-3 text-right">{line.halfDays}</td>
                   <td className="px-3 py-3 text-right">{line.absent}</td>
                   <td className="px-3 py-3 text-right">{line.weeklyOff}</td>
+                  <td className="px-3 py-3 text-right">{totalDays}</td>
                   <td className="px-3 py-3 text-right">{line.payableDays}</td>
                   <td className="px-3 py-3 text-right">{formatMoney(line.perDayRate)}</td>
                   <td className="px-3 py-3 text-right">{formatMoney(line.earned)}</td>

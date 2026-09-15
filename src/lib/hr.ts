@@ -76,12 +76,10 @@ export const STATUS_DOT: Record<AttendanceStatus, string> = {
 export function dayWeight(status: AttendanceStatus): number {
   switch (status) {
     case "present":
-      return 1;
     case "weekly_off":
-      return 2;
+      return 1;
     case "half_day_morning":
     case "half_day_afternoon":
-      return 0.5;
     case "absent":
       return 0;
   }
@@ -118,7 +116,7 @@ export function attendanceTotals(rows: AttendanceRow[]) {
 
   const markedDays = rows.length;
   const halfDayEquivalent = halfDays / 2;
-  const payableDays = markedDays - absent + weeklyOff - halfDayEquivalent;
+  const payableDays = present + weeklyOff;
 
   return { present, halfDays, halfDayEquivalent, absent, weeklyOff, markedDays, payableDays };
 }
@@ -172,6 +170,14 @@ export function formatDate(value: string | null | undefined): string {
   const date = new Date(value + (value.length === 10 ? "T00:00:00" : ""));
   if (Number.isNaN(date.getTime())) return value;
   return date.toLocaleDateString("en-IN", { day: "2-digit", month: "short", year: "numeric" });
+}
+
+export function inclusiveDays(from: string, to: string): number {
+  if (!from || !to || from > to) return 0;
+  const start = Date.parse(`${from}T00:00:00Z`);
+  const end = Date.parse(`${to}T00:00:00Z`);
+  if (Number.isNaN(start) || Number.isNaN(end)) return 0;
+  return Math.floor((end - start) / 86_400_000) + 1;
 }
 
 export function todayISO(): string {
