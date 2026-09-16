@@ -69,7 +69,7 @@ export function AppShell({ children }: { children: ReactNode }) {
                 Sign out
               </button>
               <div
-                className="max-w-44 truncate text-right text-sm font-semibold text-ink sm:max-w-64"
+                className="max-w-52 break-words text-right text-sm font-semibold leading-5 text-ink sm:max-w-64"
                 title={fullName}
               >
                 {fullName}
