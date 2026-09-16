@@ -12,3 +12,4 @@
 - [x] Enforce 10-digit contact numbers, 12-digit Aadhaar, and reference relationship
 - [x] Correct attendance totals, status colours, past-date editing, and unique Aadhaar
 - [x] Remove publishing badge and add mobile home-screen installation
+- [x] Show the signed-in user's full name in the header

@@ -15,16 +15,16 @@ const NAV = [
 function BrandHeader({ children }: { children?: ReactNode }) {
   return (
     <header className="sticky top-0 z-40 border-b border-line bg-ground/95 backdrop-blur">
-      <div className="mx-auto flex max-w-[1200px] items-center justify-between gap-4 px-5 py-3">
-        <div className="flex items-center gap-3">
+      <div className="mx-auto flex max-w-[1200px] flex-wrap items-center justify-between gap-x-4 gap-y-3 px-5 py-3">
+        <div className="flex min-w-0 items-center gap-3">
           <div className="grid size-11 place-items-center rounded-xl bg-accent font-display text-lg font-bold leading-none text-accent-foreground">
             A·Z
           </div>
-          <div>
+          <div className="min-w-0">
             <div className="font-display text-3xl font-bold leading-none tracking-tight">
               A to Z
             </div>
-            <div className="mt-0.5 text-[11px] tracking-wide text-muted-ink">
+            <div className="mt-0.5 truncate text-[11px] tracking-wide text-muted-ink">
               OMR Road, Navalur Junction, Chennai
             </div>
           </div>
@@ -38,11 +38,12 @@ function BrandHeader({ children }: { children?: ReactNode }) {
 export function AppShell({ children }: { children: ReactNode }) {
   const { session, loading, signOut } = useAuth();
 
-  const initials =
-    session?.user.email
-      ?.split("@")[0]
-      ?.slice(0, 2)
-      .toUpperCase() ?? "AZ";
+  const metadata = session?.user.user_metadata;
+  const fullName =
+    (typeof metadata?.full_name === "string" && metadata.full_name.trim()) ||
+    (typeof metadata?.name === "string" && metadata.name.trim()) ||
+    session?.user.email ||
+    "Signed-in user";
 
   return (
     <div className="min-h-screen bg-ground font-body text-ink">
@@ -62,13 +63,16 @@ export function AppShell({ children }: { children: ReactNode }) {
                 </Link>
               ))}
             </nav>
-            <div className="flex items-center gap-2">
+            <div className="ml-auto flex min-w-0 items-center gap-2">
               <InstallApp />
               <button className="btn-quiet text-sm" onClick={() => void signOut()}>
                 Sign out
               </button>
-              <div className="grid size-9 place-items-center rounded-full bg-ink/10 font-display text-sm font-semibold">
-                {initials}
+              <div
+                className="max-w-44 truncate text-right text-sm font-semibold text-ink sm:max-w-64"
+                title={fullName}
+              >
+                {fullName}
               </div>
             </div>
           </>
