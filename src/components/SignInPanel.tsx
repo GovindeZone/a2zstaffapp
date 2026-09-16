@@ -24,7 +24,7 @@ export function SignInPanel() {
           options: { emailRedirectTo: window.location.origin },
         });
         if (error) throw error;
-        toast.success("Account created. You can sign in now.");
+        toast.success("Account created. An administrator must approve your account before access is granted.");
         setMode("signin");
       }
     } catch (error) {
