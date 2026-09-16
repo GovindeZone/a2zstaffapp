@@ -235,3 +235,77 @@ export async function openDocument(filePath: string) {
   if (error) throw error;
   window.open(data.signedUrl, "_blank", "noopener,noreferrer");
 }
+
+export type RecruitmentJobType = "Full time" | "Part time";
+export type RecruitmentStatus =
+  | "Interested"
+  | "Not Interested"
+  | "Busy/Unreachable"
+  | "Interviewed"
+  | "Interviewed - Not Joined"
+  | "Joined/Hired";
+
+export interface RecruitmentCandidate {
+  id: string;
+  candidate_name: string;
+  phone_number: string;
+  enquiry_date: string;
+  job_type: RecruitmentJobType;
+  enquiry_status: RecruitmentStatus;
+  enquiry_remarks: string;
+  created_at: string;
+  updated_at: string;
+}
+
+const recruitmentSchema = z.object({
+  candidate_name: z.string().trim().min(1, "Candidate Name is required.").max(100),
+  phone_number: z.string().regex(/^\d{10}$/, "Phone number must be exactly 10 digits."),
+  enquiry_date: z.string().date(),
+  job_type: z.enum(["Full time", "Part time"]),
+  enquiry_status: z.enum([
+    "Interested",
+    "Not Interested",
+    "Busy/Unreachable",
+    "Interviewed",
+    "Interviewed - Not Joined",
+    "Joined/Hired",
+  ]),
+  enquiry_remarks: z.string().trim().min(1, "Enquiry Remarks is required.").max(1000),
+});
+
+export function useRecruitmentCandidates() {
+  return useQuery({
+    queryKey: ["recruitment-candidates"],
+    queryFn: async (): Promise<RecruitmentCandidate[]> => {
+      const db = supabase as unknown as { from: (table: string) => any };
+      const { data, error } = await db
+        .from("recruitment_candidates")
+        .select("*")
+        .order("enquiry_date", { ascending: false })
+        .order("created_at", { ascending: false });
+      if (error) throw error;
+      return (data ?? []) as RecruitmentCandidate[];
+    },
+  });
+}
+
+export function useSaveCandidate() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async (payload: Omit<RecruitmentCandidate, "id" | "created_at" | "updated_at">) => {
+      const validated = recruitmentSchema.parse(payload);
+      const db = supabase as unknown as { from: (table: string) => any };
+      const { data, error } = await db
+        .from("recruitment_candidates")
+        .insert(validated)
+        .select("id")
+        .single();
+      if (error?.code === "23505") {
+        throw new Error("A candidate with this phone number already exists.");
+      }
+      if (error) throw error;
+      return data.id as string;
+    },
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["recruitment-candidates"] }),
+  });
+}
