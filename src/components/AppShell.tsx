@@ -40,8 +40,8 @@ export function AppShell({ children }: { children: ReactNode }) {
 
   const metadata = session?.user.user_metadata;
   const fullName =
-    (typeof metadata?.full_name === "string" && metadata.full_name.trim()) ||
-    (typeof metadata?.name === "string" && metadata.name.trim()) ||
+    (typeof metadata?.["full_name"] === "string" && metadata["full_name"].trim()) ||
+    (typeof metadata?.["name"] === "string" && metadata["name"].trim()) ||
     session?.user.email ||
     "Signed-in user";
 
