@@ -1,6 +1,7 @@
 import { Link } from "@tanstack/react-router";
 import type { ReactNode } from "react";
 
+import { InstallApp } from "@/components/InstallApp";
 import { SignInPanel } from "@/components/SignInPanel";
 import { useAuth } from "@/hooks/useAuth";
 
@@ -62,6 +63,7 @@ export function AppShell({ children }: { children: ReactNode }) {
               ))}
             </nav>
             <div className="flex items-center gap-2">
+              <InstallApp />
               <button className="btn-quiet text-sm" onClick={() => void signOut()}>
                 Sign out
               </button>
@@ -70,7 +72,9 @@ export function AppShell({ children }: { children: ReactNode }) {
               </div>
             </div>
           </>
-        ) : null}
+        ) : (
+          <InstallApp />
+        )}
       </BrandHeader>
 
       {session ? (
