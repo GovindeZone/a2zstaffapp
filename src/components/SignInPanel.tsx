@@ -6,6 +6,7 @@ import { supabase } from "@/integrations/supabase/client";
 
 export function SignInPanel() {
   const [mode, setMode] = useState<"signin" | "signup">("signin");
+  const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [busy, setBusy] = useState(false);
@@ -18,10 +19,16 @@ export function SignInPanel() {
         const { error } = await supabase.auth.signInWithPassword({ email, password });
         if (error) throw error;
       } else {
+        const savedFullName = fullName.trim();
+        if (!savedFullName) throw new Error("Full name is required");
+
         const { error } = await supabase.auth.signUp({
           email,
           password,
-          options: { emailRedirectTo: window.location.origin },
+          options: {
+            emailRedirectTo: window.location.origin,
+            data: { full_name: savedFullName },
+          },
         });
         if (error) throw error;
         toast.success("Account created. An administrator must approve your account before access is granted.");
@@ -58,6 +65,20 @@ export function SignInPanel() {
           </p>
         </div>
         <form onSubmit={submit} className="space-y-3 p-5">
+          {mode === "signup" ? (
+            <label className="block">
+              <span className="field-label">Full Name</span>
+              <input
+                type="text"
+                required
+                maxLength={100}
+                autoComplete="name"
+                className="field"
+                value={fullName}
+                onChange={(event) => setFullName(event.target.value)}
+              />
+            </label>
+          ) : null}
           <label className="block">
             <span className="field-label">Email</span>
             <input
