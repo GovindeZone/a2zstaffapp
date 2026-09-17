@@ -147,14 +147,123 @@ export type Database = {
         }
         Relationships: []
       }
+      user_profiles: {
+        Row: {
+          allowed_tabs: string[]
+          created_at: string
+          email: string
+          full_name: string | null
+          id: string
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          allowed_tabs?: string[]
+          created_at?: string
+          email: string
+          full_name?: string | null
+          id: string
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          allowed_tabs?: string[]
+          created_at?: string
+          email?: string
+          full_name?: string | null
+          id?: string
+          status?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      user_roles: {
+        Row: {
+          created_at: string
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      admin_list_users: {
+        Args: never
+        Returns: {
+          allowed_tabs: string[]
+          created_at: string
+          email: string
+          full_name: string
+          id: string
+          role: string
+          status: string
+          updated_at: string
+        }[]
+      }
+      admin_update_user: {
+        Args: {
+          new_allowed_tabs?: string[]
+          new_status?: string
+          target_user_id: string
+        }
+        Returns: {
+          allowed_tabs: string[]
+          created_at: string
+          email: string
+          full_name: string
+          id: string
+          role: string
+          status: string
+          updated_at: string
+        }[]
+      }
+      ensure_my_profile: {
+        Args: never
+        Returns: {
+          allowed_tabs: string[]
+          created_at: string
+          email: string
+          full_name: string
+          id: string
+          role: string
+          status: string
+          updated_at: string
+        }[]
+      }
+      is_admin: { Args: { check_user_id?: string }; Returns: boolean }
+      is_approved: { Args: { check_user_id?: string }; Returns: boolean }
+      transfer_admin: {
+        Args: { target_user_id: string }
+        Returns: {
+          allowed_tabs: string[]
+          created_at: string
+          email: string
+          full_name: string
+          id: string
+          role: string
+          status: string
+          updated_at: string
+        }[]
+      }
     }
     Enums: {
+      app_role: "admin" | "user"
       attendance_status:
         | "present"
         | "absent"
@@ -289,6 +398,7 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
+      app_role: ["admin", "user"],
       attendance_status: [
         "present",
         "absent",
