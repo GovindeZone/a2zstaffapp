@@ -39,15 +39,17 @@ const AuthContext = createContext<AuthState>({
 });
 
 async function loadProfile(userId: string): Promise<UserProfile | null> {
-  const db = supabase as unknown as { from: (table: string) => any };
-  const { data, error } = await db.from("user_profiles").select("*").eq("id", userId).maybeSingle();
+  if (!userId) return null;
+  const db = supabase as unknown as { rpc: (fn: string, args?: Record<string, unknown>) => any };
+  const { data, error } = await db.rpc("ensure_my_profile");
 
   if (error) {
-    console.error("Could not load user profile", error);
+    console.error("Could not ensure user profile", error);
     return null;
   }
 
-  return (data as unknown as UserProfile | null) ?? null;
+  const profile = Array.isArray(data) ? data[0] : data;
+  return (profile as UserProfile | null) ?? null;
 }
 
 export function AuthProvider({ children }: { children: ReactNode }) {
@@ -90,7 +92,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         return;
       }
 
-      // Avoid querying Supabase synchronously inside the auth callback.
       window.setTimeout(() => {
         if (!mounted) return;
         void loadProfile(next.user.id).then((nextProfile) => {
@@ -119,17 +120,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     isAdmin || (profile?.status === "approved" && profile.allowed_tabs.includes(tab));
 
   return (
-    <AuthContext.Provider
-      value={{
-        session,
-        profile,
-        loading,
-        signOut,
-        refreshProfile,
-        isAdmin,
-        canAccess,
-      }}
-    >
+    <AuthContext.Provider value={{ session, profile, loading, signOut, refreshProfile, isAdmin, canAccess }}>
       {children}
     </AuthContext.Provider>
   );
