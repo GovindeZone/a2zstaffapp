@@ -12,9 +12,9 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AttendanceRouteImport } from './routes/attendance'
 import { Route as EmployeesRouteImport } from './routes/employees'
+import { Route as RecruitmentRouteImport } from './routes/recruitment'
 import { Route as SalaryRouteImport } from './routes/salary'
 import { Route as UserControlRouteImport } from './routes/user-control'
-import { Route as RecruitmentRouteImport } from './routes/recruitment'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -31,6 +31,11 @@ const EmployeesRoute = EmployeesRouteImport.update({
   path: '/employees',
   getParentRoute: () => rootRouteImport,
 } as any)
+const RecruitmentRoute = RecruitmentRouteImport.update({
+  id: '/recruitment',
+  path: '/recruitment',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const SalaryRoute = SalaryRouteImport.update({
   id: '/salary',
   path: '/salary',
@@ -41,52 +46,66 @@ const UserControlRoute = UserControlRouteImport.update({
   path: '/user-control',
   getParentRoute: () => rootRouteImport,
 } as any)
-const RecruitmentRoute = RecruitmentRouteImport.update({
-  id: '/recruitment',
-  path: '/recruitment',
-  getParentRoute: () => rootRouteImport,
-} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/attendance': typeof AttendanceRoute
   '/employees': typeof EmployeesRoute
+  '/recruitment': typeof RecruitmentRoute
   '/salary': typeof SalaryRoute
   '/user-control': typeof UserControlRoute
-  '/recruitment': typeof RecruitmentRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/attendance': typeof AttendanceRoute
   '/employees': typeof EmployeesRoute
+  '/recruitment': typeof RecruitmentRoute
   '/salary': typeof SalaryRoute
   '/user-control': typeof UserControlRoute
-  '/recruitment': typeof RecruitmentRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/attendance': typeof AttendanceRoute
   '/employees': typeof EmployeesRoute
+  '/recruitment': typeof RecruitmentRoute
   '/salary': typeof SalaryRoute
   '/user-control': typeof UserControlRoute
-  '/recruitment': typeof RecruitmentRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/attendance' | '/employees' | '/salary' | '/recruitment' | '/user-control'
+  fullPaths:
+    | '/'
+    | '/attendance'
+    | '/employees'
+    | '/recruitment'
+    | '/salary'
+    | '/user-control'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/attendance' | '/employees' | '/salary' | '/recruitment' | '/user-control'
-  id: '__root__' | '/' | '/attendance' | '/employees' | '/salary' | '/recruitment' | '/user-control'
+  to:
+    | '/'
+    | '/attendance'
+    | '/employees'
+    | '/recruitment'
+    | '/salary'
+    | '/user-control'
+  id:
+    | '__root__'
+    | '/'
+    | '/attendance'
+    | '/employees'
+    | '/recruitment'
+    | '/salary'
+    | '/user-control'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AttendanceRoute: typeof AttendanceRoute
   EmployeesRoute: typeof EmployeesRoute
+  RecruitmentRoute: typeof RecruitmentRoute
   SalaryRoute: typeof SalaryRoute
   UserControlRoute: typeof UserControlRoute
-  RecruitmentRoute: typeof RecruitmentRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -112,6 +131,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof EmployeesRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/recruitment': {
+      id: '/recruitment'
+      path: '/recruitment'
+      fullPath: '/recruitment'
+      preLoaderRoute: typeof RecruitmentRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/salary': {
       id: '/salary'
       path: '/salary'
@@ -126,13 +152,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof UserControlRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/recruitment': {
-      id: '/recruitment'
-      path: '/recruitment'
-      fullPath: '/recruitment'
-      preLoaderRoute: typeof RecruitmentRouteImport
-      parentRoute: typeof rootRouteImport
-    }
   }
 }
 
@@ -140,9 +159,9 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AttendanceRoute: AttendanceRoute,
   EmployeesRoute: EmployeesRoute,
+  RecruitmentRoute: RecruitmentRoute,
   SalaryRoute: SalaryRoute,
   UserControlRoute: UserControlRoute,
-  RecruitmentRoute: RecruitmentRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
