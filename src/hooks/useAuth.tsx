@@ -38,16 +38,12 @@ const AuthContext = createContext<AuthState>({
   canAccess: () => false,
 });
 
-async function loadProfile(userId: string): Promise<UserProfile | null> {
-  if (!userId) return null;
-  const db = supabase as unknown as { rpc: (fn: string, args?: Record<string, unknown>) => any };
-  const { data, error } = await db.rpc("ensure_my_profile");
-
+async function loadProfile(): Promise<UserProfile | null> {
+  const { data, error } = await supabase.rpc("ensure_my_profile");
   if (error) {
     console.error("Could not ensure user profile", error);
     return null;
   }
-
   const profile = Array.isArray(data) ? data[0] : data;
   return (profile as UserProfile | null) ?? null;
 }
@@ -58,11 +54,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [loading, setLoading] = useState(true);
 
   const refreshProfile = async () => {
-    if (!session?.user.id) {
+    if (!session) {
       setProfile(null);
       return;
     }
-    setProfile(await loadProfile(session.user.id));
+    setProfile(await loadProfile());
   };
 
   useEffect(() => {
@@ -74,7 +70,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
       setSession(current.session);
       if (current.session) {
-        setProfile(await loadProfile(current.session.user.id));
+        const nextProfile = await loadProfile();
+        if (mounted) setProfile(nextProfile);
       } else {
         setProfile(null);
       }
@@ -92,15 +89,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         return;
       }
 
-      window.setTimeout(() => {
-        if (!mounted) return;
-        void loadProfile(next.user.id).then((nextProfile) => {
-          if (mounted) {
-            setProfile(nextProfile);
-            setLoading(false);
-          }
-        });
-      }, 0);
+      void loadProfile().then((nextProfile) => {
+        if (mounted) {
+          setProfile(nextProfile);
+          setLoading(false);
+        }
+      });
     });
 
     return () => {
