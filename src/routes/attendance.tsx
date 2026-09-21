@@ -6,7 +6,6 @@ import { AppShell } from "@/components/AppShell";
 import {
   ATTENDANCE_OPTIONS,
   STATUS_TONE,
-  attendanceTotals,
   todayISO,
   type AttendanceStatus,
 } from "@/lib/hr";
@@ -73,10 +72,6 @@ function AttendancePage() {
     const inDept = department === "all" || employee.department === department;
     return matches && inDept;
   });
-  const visibleIds = new Set(visible.map((employee) => employee.id));
-  const totals = attendanceTotals(
-    (rows.data ?? []).filter((row) => visibleIds.has(row.employee_id)),
-  );
 
   const setStatus = (employeeId: string, status: AttendanceStatus) => {
     mark.mutate(
@@ -113,9 +108,6 @@ function AttendancePage() {
     <AppShell>
       <section className="rise panel p-5">
         <h1 className="font-display text-2xl font-bold tracking-tight">Daily attendance</h1>
-        <p className="mt-1 text-sm text-muted-ink">
-          {statusFor.size} of {eligible.length} eligible employees marked on this date.
-        </p>
         <div className="mt-4 grid gap-3 md:grid-cols-4">
           <label className="block">
             <span className="field-label">Date</span>
@@ -167,14 +159,6 @@ function AttendancePage() {
             Mark remaining weekly off
           </button>
         </div>
-        <div className="mt-4 grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-6">
-          <AttendanceTotal label="Present" value={totals.present} tone="text-present" />
-          <AttendanceTotal label="Absent" value={totals.absent} tone="text-absent" />
-          <AttendanceTotal label="Half day" value={totals.halfDays} tone="text-half" />
-          <AttendanceTotal label="Week off" value={totals.weeklyOff} tone="text-off" />
-          <AttendanceTotal label="Marked days" value={totals.markedDays} tone="text-ink" />
-          <AttendanceTotal label="Payable days" value={totals.payableDays} tone="text-ink" />
-        </div>
       </section>
 
       <section className="panel divide-y divide-line">
@@ -223,14 +207,5 @@ function AttendancePage() {
         )}
       </section>
     </AppShell>
-  );
-}
-
-function AttendanceTotal({ label, value, tone }: { label: string; value: number; tone: string }) {
-  return (
-    <div className="rounded-lg border border-line bg-ground px-3 py-2">
-      <p className="text-[11px] text-muted-ink">{label}</p>
-      <p className={`font-mono text-lg font-bold tabular-nums ${tone}`}>{value}</p>
-    </div>
   );
 }
