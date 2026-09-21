@@ -59,7 +59,7 @@ export function SignInPanel() {
     <div className="mx-auto max-w-md px-5 py-14">
       <div className="panel sheet overflow-hidden">
         <div className="border-b border-line px-5 py-4">
-          <h1 className="font-display text-2xl font-semibold">Staff sign in</h1>
+          <h1 className="font-display text-2xl font-semibold">Login</h1>
           <p className="mt-1 text-xs text-muted-ink">
             Employee records are private. Sign in to open the register.
           </p>
@@ -114,7 +114,7 @@ export function SignInPanel() {
             onClick={() => setMode(mode === "signin" ? "signup" : "signin")}
           >
             {mode === "signin"
-              ? "First time here? Create a staff account"
+              ? "New User Sign Up"
               : "Already have an account? Sign in"}
           </button>
         </form>
