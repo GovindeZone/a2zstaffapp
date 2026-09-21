@@ -1,18 +1,18 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 
 import { AppShell } from "@/components/AppShell";
 import { useAttendanceRange, useEmployees } from "@/lib/queries";
-import { monthStartISO, todayISO, type AttendanceStatus } from "@/lib/hr";
+import { todayISO } from "@/lib/hr";
 
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Dashboard — A to Z HR Register" },
+      { title: "Dashboard — A to Z Shop" },
       {
         name: "description",
-        content: "Daily attendance summary for A to Z, Navalur Junction, Chennai.",
+        content: "Daily attendance summary for A to Z Shop, Navalur Junction, Chennai.",
       },
-      { property: "og:title", content: "Dashboard — A to Z HR Register" },
+      { property: "og:title", content: "Dashboard — A to Z Shop" },
       {
         property: "og:description",
         content: "Present, absent and total employee counts at a glance.",
@@ -52,6 +52,19 @@ function Dashboard() {
           })}
         </p>
       </section>
+
+      <Link
+        to="/attendance"
+        className="panel group flex items-center justify-between gap-4 border-accent/40 bg-accent/5 p-3 transition hover:border-accent hover:bg-accent/10"
+      >
+        <div>
+          <p className="text-sm font-semibold">Mark attendance</p>
+          <p className="text-xs text-muted-ink">Quickly record today’s staff attendance</p>
+        </div>
+        <span className="shrink-0 rounded-lg bg-accent px-3 py-1.5 text-xs font-semibold text-accent-foreground transition group-hover:scale-[1.02]">
+          Open
+        </span>
+      </Link>
 
       <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
         <Stat label="Present" value={present} tone="text-present" />
