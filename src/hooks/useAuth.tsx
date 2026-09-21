@@ -4,7 +4,7 @@ import { createContext, useContext, useEffect, useState, type ReactNode } from "
 import { supabase } from "@/integrations/supabase/client";
 
 export type UserRole = "admin" | "user";
-export type UserStatus = "pending" | "approved" | "rejected";
+export type UserStatus = "pending" | "approved" | "rejected" | "disabled";
 export type AppTab = "dashboard" | "employees" | "attendance" | "salary" | "recruitment" | "user_control";
 
 export interface UserProfile {
@@ -58,7 +58,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setProfile(null);
       return;
     }
-    setProfile(await loadProfile());
+    const nextProfile = await loadProfile();
+    setProfile(nextProfile);
+    if (nextProfile?.status === "disabled") {
+      await supabase.auth.signOut();
+      setSession(null);
+      setProfile(null);
+    }
   };
 
   useEffect(() => {
@@ -71,7 +77,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setSession(current.session);
       if (current.session) {
         const nextProfile = await loadProfile();
-        if (mounted) setProfile(nextProfile);
+        if (mounted) {
+          if (nextProfile?.status === "disabled") {
+            await supabase.auth.signOut();
+            setSession(null);
+            setProfile(null);
+          } else {
+            setProfile(nextProfile);
+          }
+        }
       } else {
         setProfile(null);
       }
@@ -89,11 +103,19 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         return;
       }
 
-      void loadProfile().then((nextProfile) => {
-        if (mounted) {
-          setProfile(nextProfile);
-          setLoading(false);
+      void loadProfile().then(async (nextProfile) => {
+        if (!mounted) return;
+        if (nextProfile?.status === "disabled") {
+          await supabase.auth.signOut();
+          if (mounted) {
+            setSession(null);
+            setProfile(null);
+            setLoading(false);
+          }
+          return;
         }
+        setProfile(nextProfile);
+        setLoading(false);
       });
     });
 
